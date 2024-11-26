@@ -13,13 +13,6 @@ app.use(express.json())
 
 connectDB()
 
-app.use("/", (req, res, next) => {
-  res.status(200).json({
-    message: "Welcome to the web server"
-  })
-})
-
-
 app.use("/products", routers)
 
 app.post('/webhook', async (req, res, next) => {
