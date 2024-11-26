@@ -90,6 +90,12 @@ app.use("*", (req, res, next) => {
   next(err)
 })
 
+app.use("/", (req, res, next) => {
+  red.json({
+    message: 'Welcome to the webhook server'
+  })
+})
+
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({ message: err.message })
 })
