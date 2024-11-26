@@ -112,15 +112,15 @@ app.post('/webhook', async (req, res, next) => {
 
 
 
-// app.use("*", (req, res, next) => {
-//   res.status(404).json({
-//     message: "Invalid requests"
-//   })
-// })
-
-
-app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).json({ message: err.message })
+app.use("*", (req, res, next) => {
+  res.status(404).json({
+    message: "Invalid requests"
+  })
 })
+
+
+// app.use((err, req, res, next) => {
+//   res.status(err.statusCode || 500).json({ message: err.message })
+// })
 
 app.listen(port, () => console.log(`chatbot listening on port ${port}!`))
