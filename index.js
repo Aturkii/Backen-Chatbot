@@ -85,8 +85,9 @@ app.post('/webhook', async (req, res, next) => {
 
 
 app.use("*", (req, res, next) => {
-  const err = new AppError("Invalid routes!", 404)
-  next(err)
+  res.status(404).json({
+    message: "Invalid requests"
+  })
 })
 
 
