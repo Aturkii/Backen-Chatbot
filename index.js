@@ -25,12 +25,12 @@ app.post('/webhook', async (req, res, next) => {
   console.log("Received webhook request:", JSON.stringify(req.body, null, 2));  // Log the incoming request to debug
 
   try {
-    const intentName = req.body.queryResult.intent.displayName;
+    const intent = req.body.queryResult.intent.displayName;
     const parameters = req.body.queryResult.parameters;
     let fulfillmentText = '';
 
-    switch (intentName) {
-      case 'Add Product Intent':
+    switch (intent) {
+      case 'Add Product intent':
         const { productName, quantity, price } = parameters;
         try {
           const addProductResponse = await axios.post(`${backendURL}/products`, { productName, quantity, price });
@@ -92,7 +92,7 @@ app.post('/webhook', async (req, res, next) => {
         break;
 
       default:
-        fulfillmentText = `Sorry, I can't handle the intent: ${intentName}.`;
+        fulfillmentText = `Sorry, I can't handle the intent: ${intent}.`;
     }
 
     res.json({ fulfillmentText });
