@@ -96,8 +96,8 @@ app.use("*", (req, res, next) => {
 })
 
 
-// app.use((err, req, res, next) => {
-//   res.status(err.statusCode || 500).json({ message: err.message })
-// })
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({ message: err.message })
+})
 
 app.listen(port, () => console.log(`chatbot listening on port ${port}!`))
