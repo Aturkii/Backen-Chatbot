@@ -15,29 +15,23 @@ connectDB()
 
 app.use("/products", routers)
 
-
-
-
-
-
-
-app.post('/webhook', async (req, res, next) => {
-  console.log("Received webhook request:", JSON.stringify(req.body, null, 2));  // Log the incoming request to debug
+app.post('/webhook', async (req, res) => {
+  console.log("Received webhook request:", JSON.stringify(req.body, null, 2));
 
   try {
-    const intent = req.body.queryResult.intent.displayName;
+    const intentName = req.body.queryResult.intent.displayName;
     const parameters = req.body.queryResult.parameters;
     let fulfillmentText = '';
 
-    switch (intent) {
-      case 'Add Product intent':
+    switch (intentName) {
+      case 'Add Product Intent':
         const { productName, quantity, price } = parameters;
         try {
           const addProductResponse = await axios.post(`${backendURL}/products`, { productName, quantity, price });
-          fulfillmentText = `Product ${productName} added successfully with quantity ${quantity} and price ${price}.`;
+          fulfillmentText = `Product "${productName}" added successfully with quantity ${quantity} and price ${price}.`;
         } catch (err) {
           console.error("Error while adding product:", err);
-          fulfillmentText = "Error adding product.";
+          fulfillmentText = "Error adding product. Please try again.";
         }
         break;
 
@@ -46,24 +40,27 @@ app.post('/webhook', async (req, res, next) => {
         try {
           const productResponse = await axios.get(`${backendURL}/products/product`, { params: { productName: getProductName } });
           const product = productResponse.data;
-          fulfillmentText = `Product: ${product.productName}, Quantity: ${product.quantity}, Price: ${product.price}.`;
+          if (product) {
+            fulfillmentText = `Product: "${product.productName}", Quantity: ${product.quantity}, Price: ${product.price}.`;
+          } else {
+            fulfillmentText = `No product found with the name "${getProductName}".`;
+          }
         } catch (err) {
-          console.error("Error while getting product:", err); 
-          fulfillmentText = "Error fetching product.";
+          console.error("Error while fetching product:", err);
+          fulfillmentText = "Error fetching product. Please try again.";
         }
         break;
 
       case 'Update Product Intent':
         const { updateProductName, updateQuantity, updatePrice } = parameters;
         try {
-          await axios.put(`${backendURL}/products`, null, {
+          const updateResponse = await axios.put(`${backendURL}/products`, null, {
             params: { productName: updateProductName },
             data: { quantity: updateQuantity, price: updatePrice }
           });
-          fulfillmentText = `Product ${updateProductName} updated successfully.`;
+          fulfillmentText = `Product "${updateProductName}" updated successfully with new quantity ${updateQuantity} and price ${updatePrice}.`;
         } catch (err) {
-          console.error("Error while updating product:", err);  
-          fulfillmentText = "Error updating product.";
+          fulfillmentText = "Error updating product. Please try again.";
         }
         break;
 
@@ -71,10 +68,9 @@ app.post('/webhook', async (req, res, next) => {
         const { deleteProductName } = parameters;
         try {
           await axios.delete(`${backendURL}/products`, { params: { productName: deleteProductName } });
-          fulfillmentText = `Product ${deleteProductName} deleted successfully.`;
+          fulfillmentText = `Product "${deleteProductName}" deleted successfully.`;
         } catch (err) {
-          console.error("Error while deleting product:", err);
-          fulfillmentText = "Error deleting product.";
+          fulfillmentText = "Error deleting product. Please try again.";
         }
         break;
 
@@ -82,22 +78,24 @@ app.post('/webhook', async (req, res, next) => {
         try {
           const allProductsResponse = await axios.get(`${backendURL}/products`);
           const allProducts = allProductsResponse.data.products;
-          fulfillmentText = `Available products: ${allProducts.map(
-            (product) => `${product.productName} (Qty: ${product.quantity}, Price: ${product.price})`
-          ).join(', ')}.`;
+          if (allProducts.length > 0) {
+            fulfillmentText = `Available products: ${allProducts.map(
+              (product) => `"${product.productName}" (Qty: ${product.quantity}, Price: ${product.price})`
+            ).join(', ')}.`;
+          } else {
+            fulfillmentText = "No products available in the system.";
+          }
         } catch (err) {
-          console.error("Error while fetching all products:", err);  
-          fulfillmentText = "Error fetching products.";
+          fulfillmentText = "Error fetching products. Please try again.";
         }
         break;
 
       default:
-        fulfillmentText = `Sorry, I can't handle the intent: ${intent}.`;
+        fulfillmentText = `Sorry, I can't handle the intent: "${intentName}". Please try again.`;
     }
 
     res.json({ fulfillmentText });
   } catch (error) {
-    console.error('Webhook error:', error); 
     res.status(500).json({
       fulfillmentText: 'Something went wrong. Please try again later.',
       error: error.message,
@@ -112,15 +110,15 @@ app.post('/webhook', async (req, res, next) => {
 
 
 
-app.use("*", (req, res, next) => {
-  res.status(404).json({
-    message: "Invalid requests"
-  })
-})
-
-
-// app.use((err, req, res, next) => {
-//   res.status(err.statusCode || 500).json({ message: err.message })
+// app.use("*", (req, res, next) => {
+//   res.status(404).json({
+//     message: "Invalid requests"
+//   })
 // })
+
+
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({ message: err.message })
+})
 
 app.listen(port, () => console.log(`chatbot listening on port ${port}!`))
