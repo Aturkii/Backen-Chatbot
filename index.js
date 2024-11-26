@@ -1,7 +1,6 @@
 import express from 'express'
 import { connectDB } from './DB/dbConnection.js'
 import routers from './src/modules/product/product.routes.js';
-import { AppError } from './src/utils/AppError.js';
 import cors from 'cors';
 import axios from 'axios';
 const app = express()
@@ -13,6 +12,13 @@ app.use(cors());
 app.use(express.json())
 
 connectDB()
+
+app.use("/", (req, res, next) => {
+  res.status(200).json({
+    message: "Welcome to the web server"
+  })
+})
+
 
 app.use("/products", routers)
 
