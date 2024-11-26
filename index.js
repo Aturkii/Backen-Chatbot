@@ -84,12 +84,6 @@ app.post('/webhook', async (req, res, next) => {
 });
 
 
-app.use("/", (req, res, next) => {
-  res.json({
-    message: 'Welcome to the webhook server'
-  })
-})
-
 app.use("*", (req, res, next) => {
   const err = new AppError("Invalid routes!", 404)
   next(err)
