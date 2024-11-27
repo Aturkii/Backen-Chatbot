@@ -30,7 +30,7 @@ app.post('/webhook', async (req, res) => {
           })
         }
         return res.json({
-          fulfillmentText: `Here are the available products in stock: ${productList}`
+          fulfillmentText: `Here are the available products in stock: ${products}`
         })
 
       } catch (error) {
