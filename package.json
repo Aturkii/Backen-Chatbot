@@ -15,8 +15,12 @@
   "author": "Ahmed Mahmoud Turki",
   "license": "ISC",
   "dependencies": {
+    "@botpress/sdk": "^1.6.1",
+    "@google-cloud/dialogflow": "^6.12.0",
     "axios": "^1.7.8",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
+    "dialogflow": "^1.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "joi": "^17.13.3",

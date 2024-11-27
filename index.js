@@ -110,11 +110,11 @@ app.post('/webhook', async (req, res) => {
 
 
 
-// app.use("*", (req, res, next) => {
-//   res.status(404).json({
-//     message: "Invalid requests"
-//   })
-// })
+app.use("*", (req, res, next) => {
+  res.status(404).json({
+    message: "Invalid requests"
+  })
+})
 
 
 app.use((err, req, res, next) => {
