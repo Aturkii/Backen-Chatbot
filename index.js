@@ -25,7 +25,7 @@ app.post('/webhook', async (req, res) => {
 
     if (products && products.length > 0) {
       const productsList = products.map(product =>
-        `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`
+        `${product.productName} (Qty: ${product.quantity}, Price: ${product.price})`
       ).join(', ');
       return res.json({
         fulfillmentText: `Here are the available products in stock: ${productsList}`
