@@ -22,7 +22,7 @@ app.post('/webhook', async (req, res) => {
 
     if (intentName === 'Get Products Intent') {
       try {
-        const response = await axios.get('http://backendURL/products');
+        const response = await axios.get(`${backendURL}`);
         const products = response.data;
         if (products && products.length > 0) {
           const productList = products.map(
