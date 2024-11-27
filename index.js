@@ -24,7 +24,7 @@ app.post('/webhook', async (req, res) => {
       try {
         const response = await axios.get(`${backendURL}`);
         const products = response.data;
-        if (products && products.length > 0) {
+        if (products) {
           const productList = products.map(
             (product) => `"${product.name}" (Qty: ${product.quantity}, Price: ${product.price})`
           ).join(', ');
