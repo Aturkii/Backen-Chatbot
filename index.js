@@ -18,18 +18,15 @@ app.use("/", routers)
 app.post('/webhook', async (req, res) => {
   try {
     const intentName = req.body.queryResult.intent.displayName;
-
     let fulfillmentText = '';
 
-    if (intentName === 'What is in stock') {
+    if (intentName === 'Get Products Intent') {
       try {
-        const response = await axios.get(`${backendURL}`);
-
+        const response = await axios.get('http://backendURL/products');
         const products = response.data;
-
         if (products && products.length > 0) {
           const productList = products.map(
-            (product) => `"${product.productName}" (Qty: ${product.quantity}, Price: ${product.price})`
+            (product) => `"${product.name}" (Qty: ${product.quantity}, Price: ${product.price})`
           ).join(', ');
 
           fulfillmentText = `Here are the available products in stock: ${productList}`;
@@ -56,8 +53,9 @@ app.post('/webhook', async (req, res) => {
       error: error.message,
     });
   }
-
 });
+
+
 
 
 
