@@ -20,7 +20,7 @@ app.post('/webhook', async (req, res) => {
     const intentName = req.body.queryResult.intent.displayName;
     let fulfillmentText = '';
 
-    if (intentName === 'Get Products Intent') {
+    if (intentName === 'Get Products intent') {
       try {
         const response = await axios.get(`${backendURL}`);
         const products = response.data;
