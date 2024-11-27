@@ -26,13 +26,13 @@ app.post('/webhook', async (req, res) => {
         const products = response.data;
         if (!products) {
           res.json({
-            fulfillmentText :"There are no products available in stock right now."
-          })
-        } else {
-          res.json({
-            fulfillmentText : `Here are the available products in stock: ${productList}`
+            fulfillmentText: "There are no products available in stock right now."
           })
         }
+        return res.json({
+          fulfillmentText: `Here are the available products in stock: ${productList}`
+        })
+
       } catch (error) {
         console.error("Error fetching products:", error);
         fulfillmentText = "Sorry, I couldn't fetch the product list at the moment. Please try again later.";
