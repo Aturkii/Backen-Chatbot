@@ -20,20 +20,19 @@ app.post('/webhook', async (req, res) => {
     const intentName = req.body.queryResult.intent.displayName;
     let fulfillmentText = '';
 
-    if (intentName === 'Get Products intent') {
+    if (intentName === 'Get Products itent') {
       try {
         const response = await axios.get(`${backendURL}`);
         const products = response.data;
-        if (products) {
-          const productList = products.map(
-            (product) => `"${product.name}" (Qty: ${product.quantity}, Price: ${product.price})`
-          ).join(', ');
-
-          fulfillmentText = `Here are the available products in stock: ${productList}`;
+        if (!products) {
+          res.json({
+            fulfillmentText = "There are no products available in stock right now.";
+          })
         } else {
-          fulfillmentText = "There are no products available in stock right now.";
+          res.json({
+            fulfillmentText = `Here are the available products in stock: ${productList}`;
+          })
         }
-
       } catch (error) {
         console.error("Error fetching products:", error);
         fulfillmentText = "Sorry, I couldn't fetch the product list at the moment. Please try again later.";
