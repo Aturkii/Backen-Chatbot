@@ -28,6 +28,7 @@ app.post('/webhook', async (req, res) => {
         const { productName, quantity, price } = parameters;
         try {
           const addProductResponse = await axios.post(`${backendURL}/`, { productName, quantity, price });
+          console.log("Making request to:", url);
           fulfillmentText = `Product "${productName}" added successfully with quantity ${quantity} and price ${price}.`;
         } catch (err) {
           console.error("Error while adding product:", err);
