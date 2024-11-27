@@ -26,11 +26,11 @@ app.post('/webhook', async (req, res) => {
         const products = response.data;
         if (!products) {
           res.json({
-            fulfillmentText = "There are no products available in stock right now.";
+            fulfillmentText :"There are no products available in stock right now."
           })
         } else {
           res.json({
-            fulfillmentText = `Here are the available products in stock: ${productList}`;
+            fulfillmentText : `Here are the available products in stock: ${productList}`
           })
         }
       } catch (error) {
