@@ -27,7 +27,7 @@ app.post('/webhook', async (req, res) => {
       case 'Add Product Intent':
         const { productName, quantity, price } = parameters;
         try {
-          const addProductResponse = await axios.post(`${backendURL}/products`, { productName, quantity, price });
+          const addProductResponse = await axios.post(`${backendURL}/`, { productName, quantity, price });
           fulfillmentText = `Product "${productName}" added successfully with quantity ${quantity} and price ${price}.`;
         } catch (err) {
           console.error("Error while adding product:", err);
@@ -38,7 +38,7 @@ app.post('/webhook', async (req, res) => {
       case 'Get Product Intent':
         const { getProductName } = parameters;
         try {
-          const productResponse = await axios.get(`${backendURL}/products/product`, { params: { productName: getProductName } });
+          const productResponse = await axios.get(`${backendURL}/product`, { params: { productName: getProductName } });
           const product = productResponse.data;
           if (product) {
             fulfillmentText = `Product: "${product.productName}", Quantity: ${product.quantity}, Price: ${product.price}.`;
@@ -54,7 +54,7 @@ app.post('/webhook', async (req, res) => {
       case 'Update Product Intent':
         const { updateProductName, updateQuantity, updatePrice } = parameters;
         try {
-          const updateResponse = await axios.put(`${backendURL}/products`, null, {
+          const updateResponse = await axios.put(`${backendURL}/`, null, {
             params: { productName: updateProductName },
             data: { quantity: updateQuantity, price: updatePrice }
           });
@@ -67,7 +67,7 @@ app.post('/webhook', async (req, res) => {
       case 'Delete Product Intent':
         const { deleteProductName } = parameters;
         try {
-          await axios.delete(`${backendURL}/products`, { params: { productName: deleteProductName } });
+          await axios.delete(`${backendURL}/`, { params: { productName: deleteProductName } });
           fulfillmentText = `Product "${deleteProductName}" deleted successfully.`;
         } catch (err) {
           fulfillmentText = "Error deleting product. Please try again.";
@@ -76,7 +76,7 @@ app.post('/webhook', async (req, res) => {
 
       case 'Get All Products Intent':
         try {
-          const allProductsResponse = await axios.get(`${backendURL}/products`);
+          const allProductsResponse = await axios.get(`${backendURL}/`);
           const allProducts = allProductsResponse.data.products;
           if (allProducts.length > 0) {
             fulfillmentText = `Available products: ${allProducts.map(
