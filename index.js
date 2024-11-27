@@ -13,7 +13,7 @@ app.use(express.json())
 
 connectDB()
 
-app.use("/products", routers)
+app.use("/", routers)
 
 app.post('/webhook', async (req, res) => {
   console.log("Received webhook request:", JSON.stringify(req.body, null, 2));
