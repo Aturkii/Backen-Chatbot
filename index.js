@@ -16,11 +16,47 @@ connectDB()
 app.use("/", routers)
 
 app.post('/webhook', async (req, res) => {
-  console.log("Received webhook request:", JSON.stringify(req.body, null, 2));
-  res.json({
-    message: 'webhook saying hello back'
-  })
-  
+  try {
+    const intentName = req.body.queryResult.intent.displayName;
+
+    let fulfillmentText = '';
+
+    if (intentName === 'What is in stock') {
+      try {
+        const response = await axios.get(`${backendURL}`);
+
+        const products = response.data;
+
+        if (products && products.length > 0) {
+          const productList = products.map(
+            (product) => `"${product.name}" (Qty: ${product.quantity}, Price: ${product.price})`
+          ).join(', ');
+
+          fulfillmentText = `Here are the available products in stock: ${productList}`;
+        } else {
+          fulfillmentText = "There are no products available in stock right now.";
+        }
+
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        fulfillmentText = "Sorry, I couldn't fetch the product list at the moment. Please try again later.";
+      }
+    } else {
+      fulfillmentText = `Sorry, I can't handle the intent: "${intentName}". Please try again.`;
+    }
+
+    return res.json({
+      fulfillmentText: fulfillmentText
+    });
+
+  } catch (error) {
+    console.error("Error processing webhook request:", error);
+    res.status(500).json({
+      fulfillmentText: 'Something went wrong. Please try again later.',
+      error: error.message,
+    });
+  }
+
 });
 
 
