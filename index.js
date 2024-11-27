@@ -18,14 +18,23 @@ app.use("/", routers)
 app.post('/webhook', async (req, res) => {
 
   const intentName = req.body.queryResult.intent.displayName;
-  let fulfillmentText = '';
 
-  if (intentName === 'Get Products itent') {
-    const response = await axios.get(`${backendURL}`);
+  if (intentName === 'Get Products Intent') {
+    const response = await axios.get(backendURL);
     const products = response.data;
+
+    if (products && products.length > 0) {
+      const productsList = products.map(product =>
+        `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`
+      ).join(', ');
       return res.json({
-        fulfillmentText: `Here are the available products in stock: ${products}`
-      })
+        fulfillmentText: `Here are the available products in stock: ${productsList}`
+      });
+    } else {
+      return res.json({
+        fulfillmentText: "There are no products available in stock right now."
+      });
+    }
   }
 });
 
