@@ -26,7 +26,7 @@ app.post('/webhook', async (req, res) => {
     if (products.lenght != 0) {
       return res.json({
         fulfillmentText: `Here are the available products in stock.`,
-        products
+        ...products
       });
     } else {
       return res.json({
